@@ -14,5 +14,11 @@ namespace hitch.Controllers
         {
             return new hitch.data.Model.Issue().All();
         }
+
+        [Route("issues/{id}")]
+        public hitch.data.Model.Issue Get(int id)
+        {
+            return new hitch.data.Model.Issue().Get(id);
+        }
     }
 }

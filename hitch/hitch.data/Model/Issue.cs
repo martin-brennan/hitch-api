@@ -16,14 +16,35 @@ namespace hitch.data.Model
         public DateTime created { get; set; }
         public DateTime modified { get; set; }
 
-        public List<Issue> All()
+        public IEnumerable<Issue> All()
         {
-            List<Issue> issues;
+            IEnumerable<Issue> issues = Database.SimpleGetAll<Issue>();
+            return issues;
+        }
+
+        public Issue Get(int id)
+        {
+            Issue issue = Database.SimpleGet<Issue>(id);
+            return issue;
+        }
+
+        public int Add(Issue issue)
+        {
+            int id = 0;
             using (var connection = Database.GetConnection())
             {
-                issues = connection.Query<Issue>("SELECT * FROM issues").ToList();
+                DateTime now = DateTime.UtcNow;
+                id = connection.Execute("INSERT INTO issues(title, description, description_output, created, modified) VALUES(@title, @description, @description_output, @created, @modified)",
+                new
+                {
+                    title = issue.title,
+                    description = issue.description,
+                    description_output = issue.description_output,
+                    created = now,
+                    modified = now
+                });
             }
-            return issues;
+            return id;
         }
     }
 }
